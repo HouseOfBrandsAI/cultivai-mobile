@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@import "./theme/employee.css";
+
+/* Ensure the app fills the viewport even when PWA installed */
+html, body, #root {
+  min-height: 100dvh;
+}

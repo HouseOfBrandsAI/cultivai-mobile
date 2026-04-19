@@ -1,0 +1,96 @@
+/* CultivAI Employee Theme — always-on dark green palette.
+   Derived from CultivAI_Mobile_Module_v2.html prototype. */
+:root,
+:root[data-theme="employee"] {
+  /* Background */
+  --bg-primary: #0a0f0a;
+  --bg-secondary: #111a11;
+  --bg-tertiary: #1a2a1a;
+  --bg-card: rgba(20, 40, 20, 0.6);
+  --bg-glass: rgba(20, 40, 20, 0.45);
+
+  /* Borders */
+  --border-primary: rgba(100, 200, 100, 0.12);
+  --border-secondary: rgba(100, 200, 100, 0.08);
+  --border-active: rgba(132, 255, 100, 0.35);
+
+  /* Accents */
+  --accent-primary: #84ff64;
+  --accent-secondary: #4ade80;
+  --accent-hover: #65d148;
+  --accent-glow: rgba(132, 255, 100, 0.15);
+  --accent-bg: rgba(132, 255, 100, 0.08);
+
+  /* Text */
+  --text-primary: #e8f5e0;
+  --text-secondary: #a3c9a3;
+  --text-tertiary: #7fa57f;
+  --text-muted: #5a7a5a;
+  --text-on-accent: #0a0f0a;
+
+  /* Status */
+  --status-success: #4ade80;
+  --status-warning: #fbbf24;
+  --status-error: #ef4444;
+  --status-info: #60a5fa;
+
+  /* Topbar */
+  --topbar-bg: #111a11;
+  --topbar-text: #e8f5e0;
+
+  /* AI gradient */
+  --ai-bg: rgba(132, 255, 100, 0.08);
+  --ai-gradient: linear-gradient(135deg, #84ff64 0%, #4ade80 50%, #22d3ee 100%);
+
+  /* Card shadow */
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+  /* Radii + spacing */
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-full: 999px;
+  --tab-h: 68px;
+  --hdr-h: 56px;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-primary); border-radius: 4px; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(132, 255, 100, 0.2); }
+  50%      { box-shadow: 0 0 24px rgba(132, 255, 100, 0.4); }
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50%      { transform: scale(1.08); opacity: 1; }
+}
+
+.fade { animation: fadeIn 0.4s ease-out; }
