@@ -54,6 +54,13 @@ src/
 
 Employee dark-green theme is **always active** — no theme switcher. Tokens live in `src/theme/employee.css`.
 
+## Desktop alignment
+
+Room colors, task categories, priorities, and status badges mirror the desktop
+Operations Manager prototype. See [`docs/OPS_ALIGNMENT.md`](docs/OPS_ALIGNMENT.md)
+for the full contract. All usages in this app source from `src/constants/ops.js` —
+update that file in lockstep when the desktop prototype changes.
+
 ## Backend endpoints used
 
 - `/api/v1/auth/*`

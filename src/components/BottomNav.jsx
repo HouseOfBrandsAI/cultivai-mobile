@@ -1,13 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@iconify/react'
 import useAuthStore from '../stores/useAuthStore'
+import { tasksApi, chatApi } from '../api/endpoints'
+import { normalizeStatus } from '../constants/ops'
 
 const MAIN_TABS = [
   { key: 'home',  icon: 'mdi:home-outline',              path: '/' },
-  { key: 'chat',  icon: 'mdi:chat-outline',              path: '/chat' },
-  { key: 'tasks', icon: 'mdi:check-circle-outline',      path: '/tasks' },
+  { key: 'chat',  icon: 'mdi:chat-outline',              path: '/chat',  badge: 'chat' },
+  { key: 'tasks', icon: 'mdi:check-circle-outline',      path: '/tasks', badge: 'tasks' },
   { key: 'docs',  icon: 'mdi:file-document-outline',     path: '/docs' },
   { key: 'more',  icon: 'mdi:menu',                      path: null },
 ]
@@ -30,8 +32,45 @@ export default function BottomNav() {
   const location = useLocation()
   const user = useAuthStore((s) => s.user)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [badges, setBadges] = useState({ tasks: 0, chat: 0 })
 
   const isAdmin = user?.role === 'admin' || user?.role === 'manager'
+
+  /* Lightweight polling for the two badge counts. Silently fails offline. */
+  useEffect(() => {
+    if (!user?.id) return
+    let cancelled = false
+    const load = async () => {
+      try {
+        const [tasks, convs] = await Promise.all([
+          tasksApi.list({ assignee: user.id }).catch(() => []),
+          chatApi.conversations().catch(() => []),
+        ])
+        if (cancelled) return
+        const today = new Date()
+        const isOverdueOrToday = (tk) => {
+          if (!tk.due_date) return false
+          const d = new Date(tk.due_date)
+          if (Number.isNaN(d.getTime())) return false
+          const status = normalizeStatus(tk.status)
+          if (status === 'done') return false
+          return d <= new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59)
+        }
+        const tasksCount = (Array.isArray(tasks) ? tasks : [])
+          .filter((tk) => !tk.assigned_to || tk.assigned_to === user.id)
+          .filter(isOverdueOrToday)
+          .length
+        const chatCount = (Array.isArray(convs) ? convs : [])
+          .reduce((sum, c) => sum + (c.unread_count || 0), 0)
+        setBadges({ tasks: tasksCount, chat: chatCount })
+      } catch {
+        /* ignore */
+      }
+    }
+    load()
+    const id = setInterval(load, 60_000)
+    return () => { cancelled = true; clearInterval(id) }
+  }, [user?.id])
 
   const isActive = (path) => {
     if (!path) return false
@@ -57,14 +96,40 @@ export default function BottomNav() {
       >
         {MAIN_TABS.map((tab) => {
           const active = isActive(tab.path)
+          const badgeCount = tab.badge ? (badges[tab.badge] || 0) : 0
           const content = (
             <>
-              <Icon
-                icon={tab.icon}
-                width={22}
-                height={22}
-                style={{ color: active ? 'var(--accent-primary)' : 'var(--text-muted)' }}
-              />
+              <div style={{ position: 'relative' }}>
+                <Icon
+                  icon={tab.icon}
+                  width={22}
+                  height={22}
+                  style={{ color: active ? 'var(--accent-primary)' : 'var(--text-muted)' }}
+                />
+                {badgeCount > 0 && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: -4,
+                      right: -8,
+                      minWidth: 16,
+                      height: 16,
+                      padding: '0 4px',
+                      borderRadius: 8,
+                      background: 'var(--status-error)',
+                      color: '#ffffff',
+                      fontSize: 9,
+                      fontWeight: 700,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      lineHeight: 1,
+                    }}
+                  >
+                    {badgeCount > 99 ? '99+' : badgeCount}
+                  </span>
+                )}
+              </div>
               <span
                 style={{
                   fontSize: 10,
