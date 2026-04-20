@@ -23,6 +23,11 @@ export const tasksApi = {
   list: (params = {}) => api.get('/tasks', { params }).then(unwrap),
   get: (id) => api.get(`/tasks/${id}`),
   complete: (id, body) => api.post(`/tasks/${id}/complete`, body),
+  updateStatus: (id, status) => api.patch(`/tasks/${id}`, { status }),
+  toggleSubtask: (taskId, subtaskId, done) =>
+    api.patch(`/tasks/${taskId}/subtasks/${subtaskId}`, { done }),
+  addComment: (id, body) => api.post(`/tasks/${id}/comments`, body),
+  listComments: (id) => api.get(`/tasks/${id}/comments`).then(unwrap),
 }
 
 export const scheduleApi = {
@@ -39,6 +44,7 @@ export const scheduleApi = {
 export const teamApi = {
   directory: () => api.get('/team/directory').then(unwrap),
   feed: () => api.get('/team/feed').then(unwrap),
+  announcements: () => api.get('/team/announcements').then(unwrap),
   postRecognition: (body) => api.post('/team/recognition', body),
   react: (postId) => api.post(`/team/posts/${postId}/react`),
   rewardsBalance: () => api.get('/team/rewards/balance'),
