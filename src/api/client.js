@@ -15,8 +15,32 @@ api.interceptors.request.use((config) => {
   return config
 })
 
+/**
+ * Response envelope unwrapping.
+ *
+ * The grow1976 backend wraps JSON responses as:
+ *   { data: <payload>, meta: <null|obj>, error: <null|obj> }
+ *
+ * We unwrap to the inner `data` only when the shape matches exactly (all
+ * three keys present). Endpoints that return a raw body (list, scalar,
+ * token response, pre-envelope legacy) are handed through untouched.
+ */
+function isEnvelope(body) {
+  return (
+    body != null &&
+    typeof body === 'object' &&
+    !Array.isArray(body) &&
+    'data' in body &&
+    'meta' in body &&
+    'error' in body
+  )
+}
+
 api.interceptors.response.use(
-  (response) => response.data,
+  (response) => {
+    const body = response.data
+    return isEnvelope(body) ? body.data : body
+  },
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('cultivai_token')

@@ -133,6 +133,7 @@ export const pushApi = {
 
 /** Personal settings — replaces anything mobile used to write to tenant-level config. */
 export const meApi = {
+  get: () => api.get('/users/me'),
   updateSettings: (patch) => api.patch('/users/me', patch),
 }
 
