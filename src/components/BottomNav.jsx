@@ -15,10 +15,12 @@ const MAIN_TABS = [
 ]
 
 const MORE_LINKS = [
+  { key: 'inbox',     icon: 'mdi:inbox-outline',          path: '/inbox' },
   { key: 'schedule',  icon: 'mdi:calendar-clock-outline', path: '/schedule' },
   { key: 'team',      icon: 'mdi:account-group-outline',  path: '/team' },
   { key: 'forms',     icon: 'mdi:clipboard-text-outline', path: '/forms' },
   { key: 'assistant', icon: 'mdi:robot-outline',          path: '/assistant' },
+  { key: 'settings',  icon: 'mdi:cog-outline',            path: '/settings' },
 ]
 
 const ADMIN_LINKS = [

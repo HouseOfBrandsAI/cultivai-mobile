@@ -90,3 +90,49 @@ export const authApi = {
   login: (email, password) => api.post('/auth/login', { email, password }),
   me: () => api.get('/auth/me'),
 }
+
+/* ======================================================================== */
+/* Mobile ↔ Ops Manager sync (Prompt mobile-ops-sync)
+ *
+ * Endpoint ownership: Ops Manager (web) chat implements these server-side,
+ * mobile calls them. Shapes are stubbed server-side for prototype — see
+ * docs/Architecture/QA_REPORT_*.md once compat scenarios are run.
+ * ========================================================================= */
+
+/** A1 — Presence. Mobile sends heartbeats, reads online list. */
+export const presenceApi = {
+  heartbeat: (body = {}) => api.post('/mobile/presence/heartbeat', body),
+  online: () => api.get('/mobile/presence'),
+}
+
+/** A2/A3 — Broadcast + Inbox.
+ *  - `send` is manager-only. Audience can be "all" or { roles, rooms, user_ids }.
+ *  - `inbox` is the current user's read+unread entries, newest first. */
+export const broadcastApi = {
+  send: (body) => api.post('/mobile/broadcast', body),
+  inbox: () => api.get('/mobile/inbox').then(unwrap),
+  markRead: (id) => api.post(`/mobile/inbox/${id}/read`),
+}
+
+/** A6 — Nudge. Rate-limited server-side to 3/employee/hour. */
+export const nudgeApi = {
+  send: (body) => api.post('/mobile/nudge', body),
+}
+
+/** A5 — Live preview. Returns
+ *  { allowed: true, snapshot: {...} } or
+ *  { allowed: false, reason: "opt-out" | "off-shift" | "not-authorized" }. */
+export const previewApi = {
+  fetch: (userId) => api.get(`/mobile/preview/${userId}`),
+}
+
+/** Push token registration — stubbed for prototype (Web Push via VAPID lands post-merge). */
+export const pushApi = {
+  register: (body) => api.post('/mobile/push/register', body),
+}
+
+/** Personal settings — replaces anything mobile used to write to tenant-level config. */
+export const meApi = {
+  updateSettings: (patch) => api.patch('/users/me', patch),
+}
+

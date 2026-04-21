@@ -33,7 +33,9 @@
     "schedule": "Horario",
     "team": "Equipo",
     "more": "Más",
-    "assistant": "Preguntar"
+    "assistant": "Preguntar",
+    "inbox": "Bandeja",
+    "settings": "Ajustes"
   },
   "home": {
     "greetingMorning": "Buenos días",

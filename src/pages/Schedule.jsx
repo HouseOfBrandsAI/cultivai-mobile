@@ -6,6 +6,7 @@ import { scheduleApi } from '../api/endpoints'
 import { glassStyle } from '../components/GlassCard'
 import { formatDate } from '../utils/dateFormat'
 import { roomChipStyle, roomDotStyle, getRoom } from '../constants/ops'
+import SyncStatusChip from '../components/SyncStatusChip'
 
 /* ---------- Date helpers (Mon-first week) ---------- */
 
@@ -263,9 +264,18 @@ export default function Schedule() {
                             <span style={{ fontWeight: 700 }}>
                               {(s.start_time_display || s.start_time || '—')}–{(s.end_time_display || s.end_time || '—')}
                             </span>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, flexWrap: 'wrap' }}>
                               {room?.name || s.room || 'Unassigned'}
                               {s.task_type && <span style={{ opacity: 0.75 }}>· {s.task_type}</span>}
+                              {s.calendar_sync_status && s.calendar_sync_status !== 'none' && (
+                                <SyncStatusChip
+                                  provider={s.calendar_provider || 'google'}
+                                  status={s.calendar_sync_status}
+                                  lastUpdate={s.calendar_last_synced_at}
+                                  errorText={s.calendar_sync_error}
+                                  size="xs"
+                                />
+                              )}
                             </span>
                           </div>
                         )
@@ -299,11 +309,21 @@ export default function Schedule() {
               const room = getRoom(s.room)
               return (
                 <div key={s.id || idx} style={{ ...glassStyle, padding: 16 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10, flexWrap: 'wrap' }}>
                     <span style={roomDotStyle(s.room)} />
                     <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>
                       {room?.name || s.room || 'Unassigned'}
                     </h3>
+                    {s.calendar_sync_status && s.calendar_sync_status !== 'none' && (
+                      <span style={{ marginLeft: 'auto' }}>
+                        <SyncStatusChip
+                          provider={s.calendar_provider || 'google'}
+                          status={s.calendar_sync_status}
+                          lastUpdate={s.calendar_last_synced_at}
+                          errorText={s.calendar_sync_error}
+                        />
+                      </span>
+                    )}
                   </div>
                   <div style={{ display: 'grid', gap: 6, fontSize: 13, color: 'var(--text-secondary)' }}>
                     <div style={rowStyle}>

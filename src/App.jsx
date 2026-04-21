@@ -12,6 +12,9 @@ import Forms from './pages/Forms'
 import Schedule from './pages/Schedule'
 import Team from './pages/Team'
 import Assistant from './pages/Assistant'
+import Inbox from './pages/Inbox'
+import Settings from './pages/Settings'
+import Preview from './pages/Preview'
 
 import AdminDocuments from './pages/admin/Documents'
 import AdminSchedule from './pages/admin/Schedule'
@@ -32,11 +35,14 @@ export default function App() {
           <Route path="/schedule" element={<Schedule />} />
           <Route path="/team" element={<Team />} />
           <Route path="/assistant" element={<Assistant />} />
+          <Route path="/inbox" element={<Inbox />} />
+          <Route path="/settings" element={<Settings />} />
 
           <Route element={<RequireAdmin />}>
             <Route path="/admin/documents" element={<AdminDocuments />} />
             <Route path="/admin/schedule" element={<AdminSchedule />} />
             <Route path="/admin/team" element={<AdminTeam />} />
+            <Route path="/preview/:userId" element={<Preview />} />
           </Route>
         </Route>
       </Route>

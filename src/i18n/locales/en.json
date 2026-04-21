@@ -33,7 +33,9 @@
     "schedule": "Schedule",
     "team": "Team",
     "more": "More",
-    "assistant": "Ask"
+    "assistant": "Ask",
+    "inbox": "Inbox",
+    "settings": "Settings"
   },
   "home": {
     "greetingMorning": "Good morning",

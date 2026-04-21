@@ -33,7 +33,9 @@
     "schedule": "Planning",
     "team": "Équipe",
     "more": "Plus",
-    "assistant": "Demander"
+    "assistant": "Demander",
+    "inbox": "Boîte",
+    "settings": "Réglages"
   },
   "home": {
     "greetingMorning": "Bonjour",

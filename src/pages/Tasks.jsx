@@ -12,6 +12,7 @@ import {
   PRIORITIES, getPriority, priorityDotStyle,
   getRoom, roomDotStyle,
 } from '../constants/ops'
+import SyncStatusChip from '../components/SyncStatusChip'
 
 /* ---------- Date helpers ---------- */
 
@@ -349,6 +350,15 @@ function TaskCard({ task, onClick }) {
                 <Icon icon="mdi:clipboard-text-outline" width={12} /> Form
               </span>
             )}
+            {task.notion_sync_status && task.notion_sync_status !== 'none' && (
+              <SyncStatusChip
+                provider="notion"
+                status={task.notion_sync_status}
+                lastUpdate={task.notion_last_synced_at}
+                errorText={task.notion_sync_error}
+                size="xs"
+              />
+            )}
           </div>
         </div>
         <span style={statusBadgeStyle(status.id)}>{status.label}</span>
@@ -557,6 +567,14 @@ function TaskDetail({ task, onBack, onSetStatus, onToggleSubtask, onOpenForm, t 
           }}>
             <span style={priorityDotStyle(priority.id)} /> {priority.label}
           </span>
+          {task.notion_sync_status && task.notion_sync_status !== 'none' && (
+            <SyncStatusChip
+              provider="notion"
+              status={task.notion_sync_status}
+              lastUpdate={task.notion_last_synced_at}
+              errorText={task.notion_sync_error}
+            />
+          )}
         </div>
 
         <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 12 }}>{task.title}</h2>

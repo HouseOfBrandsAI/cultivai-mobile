@@ -1,10 +1,14 @@
 import { useState } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@iconify/react'
 import useAuthStore from '../stores/useAuthStore'
 import BottomNav from './BottomNav'
 import OfflineBanner from './OfflineBanner'
+import NudgeToast from './NudgeToast'
+import LivePreviewBanner from './LivePreviewBanner'
+import useInbox from '../hooks/useInbox'
+import usePresenceHeartbeat from '../hooks/usePresenceHeartbeat'
 
 const LANGS = [
   { code: 'en', flag: '🇺🇸', label: 'EN' },
@@ -19,12 +23,19 @@ export default function AppShell() {
   const logout = useAuthStore((s) => s.logout)
   const user = useAuthStore((s) => s.user)
   const [langOpen, setLangOpen] = useState(false)
+  const [fresh, setFresh] = useState([])
+
+  // Foregrounded heartbeat while authenticated.
+  usePresenceHeartbeat()
+  // Inbox poller — captures fresh entries and hands them to toast + banner.
+  useInbox((arrivals) => setFresh(arrivals))
 
   const initial = (user?.name || user?.email || 'U').charAt(0).toUpperCase()
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: 'var(--bg-primary)' }}>
       <OfflineBanner />
+      <LivePreviewBanner fresh={fresh} />
 
       <header
         className="px-4 flex items-center justify-between"
@@ -114,23 +125,25 @@ export default function AppShell() {
             )}
           </div>
 
-          <div
-            aria-label="User"
+          <Link
+            to="/settings"
+            aria-label="Settings"
             style={{
-              width: 34,
-              height: 34,
-              borderRadius: '50%',
-              background: 'var(--ai-gradient)',
+              minWidth: 40,
+              minHeight: 40,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              borderRadius: '50%',
+              background: 'var(--ai-gradient)',
               fontSize: 13,
               fontWeight: 700,
               color: 'var(--text-on-accent)',
+              textDecoration: 'none',
             }}
           >
             {initial}
-          </div>
+          </Link>
 
           <button
             onClick={() => { logout(); navigate('/login') }}
@@ -165,6 +178,7 @@ export default function AppShell() {
         <Outlet />
       </main>
 
+      <NudgeToast fresh={fresh} />
       <BottomNav />
     </div>
   )

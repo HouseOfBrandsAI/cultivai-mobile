@@ -33,7 +33,9 @@
     "schedule": "Agenda",
     "team": "Equipe",
     "more": "Mais",
-    "assistant": "Perguntar"
+    "assistant": "Perguntar",
+    "inbox": "Caixa",
+    "settings": "Ajustes"
   },
   "home": {
     "greetingMorning": "Bom dia",
