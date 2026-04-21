@@ -19,3 +19,12 @@ Thumbs.db
 *.sw?
 
 .vite/
+
+# Local probe payloads — created during compat-scenario runs
+.probe.json
+.admin_login.json
+.broadcast*.json
+.nudge*.json
+.heartbeat*.json
+.optin*.json
+.commit_msg.txt

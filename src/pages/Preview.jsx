@@ -37,7 +37,11 @@ export default function Preview() {
       .then((res) => {
         if (cancelled) return
         if (res?.allowed) {
-          setState({ loading: false, snapshot: res.snapshot, allowed: true, reason: null })
+          // Per the sync contract, the snapshot fields are flattened into
+          // the top-level response alongside `allowed: true`. Strip the flag
+          // and hand the rest to the renderer as the snapshot.
+          const { allowed: _allowed, reason: _reason, ...snapshot } = res
+          setState({ loading: false, snapshot, allowed: true, reason: null })
         } else {
           setState({ loading: false, snapshot: null, allowed: false, reason: res?.reason || 'not-authorized' })
         }

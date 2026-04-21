@@ -36,7 +36,7 @@ export default function BottomNav() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [badges, setBadges] = useState({ tasks: 0, chat: 0 })
 
-  const isAdmin = user?.role === 'admin' || user?.role === 'manager'
+  const isAdmin = user?.role === 'owner' || user?.role === 'admin' || user?.role === 'manager'
 
   /* Lightweight polling for the two badge counts. Silently fails offline. */
   useEffect(() => {

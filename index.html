@@ -15,10 +15,21 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     <script>
+      // Service worker is PRODUCTION-only. In dev (vite on :5174) the SW
+      // has historically cached /src/* modules and caused phantom stale-code
+      // bugs — see commits that follow 2ae96f0. If a SW was previously
+      // registered in dev, unregister it on the next page load.
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch(() => {})
-        })
+        const isProd = location.hostname !== 'localhost' && location.hostname !== '127.0.0.1'
+        if (isProd) {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').catch(() => {})
+          })
+        } else {
+          navigator.serviceWorker.getRegistrations()
+            .then((regs) => regs.forEach((r) => r.unregister()))
+            .catch(() => {})
+        }
       }
     </script>
   </body>

@@ -22,11 +22,32 @@ self.addEventListener('activate', (event) => {
   )
 })
 
+// Paths the service worker MUST NOT touch. Vite's dev server serves these
+// with frequently-changing content and its own HMR cache; intercepting them
+// in the SW leads to stale-module bugs that only disappear after a manual
+// SW unregister. Keep this list conservative — if in doubt, pass through.
+const SW_PASSTHROUGH_PREFIXES = [
+  '/@vite/',
+  '/@react-refresh',
+  '/@id/',
+  '/@fs/',
+  '/node_modules/',
+  '/src/',
+]
+
+function shouldPassthrough(url) {
+  if (SW_PASSTHROUGH_PREFIXES.some((p) => url.pathname.startsWith(p))) return true
+  // Vite fingerprints dep-optimized modules with ?v=… and ?t=…; leave those alone.
+  if (url.searchParams.has('v') || url.searchParams.has('t')) return true
+  return false
+}
+
 self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
 
   if (request.method !== 'GET') return
+  if (shouldPassthrough(url)) return
 
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(networkFirst(request))
